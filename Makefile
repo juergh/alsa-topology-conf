@@ -4,7 +4,7 @@
 #
 
 SRCPATH ?= .
-FWPATH ?= /lib/firmware
+FWPATH ?= $(DESTDIR)/lib/firmware
 
 builddir = buildd
 
