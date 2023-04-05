@@ -6,12 +6,24 @@
 SRCPATH ?= .
 FWPATH ?= /lib/firmware
 
-targets = $(FWPATH)/skl_hda_dsp_generic-tplg.bin
+builddir = buildd
 
-all: firmware
+targets = $(builddir)/skl_hda_dsp_generic-tplg.bin
 
-$(FWPATH)/skl_hda_dsp_generic-tplg.bin: $(SRCPATH)/topology/hda-dsp/skl_hda_dsp_generic-tplg.conf
+all: $(targets)
+
+$(builddir)/skl_hda_dsp_generic-tplg.bin: $(SRCPATH)/topology/hda-dsp/skl_hda_dsp_generic-tplg.conf
+
+$(targets):
+	test -d "$(dir $@))" || mkdir -p "$(dir $@})"
 	alsatplg -c $< -o $@
 
-.DUMMY: firmware
-firmware: $(targets)
+install: $(targets)
+	for t in $(targets) ; do \
+		install -Dm644 "$${t}" "$(FWPATH)/$${t#$(builddir)/}" ; \
+	done
+
+clean:
+	rm -rf "$(builddir)"
+
+.PHONY: all install clean
